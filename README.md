@@ -3,14 +3,18 @@ Technical test for an internship
 
 This project consists of three Python scripts: **top_1day.py**, **top_7days.py**, and **main.py**. 
 
-How to run the project ? 
+### How to run the project ? 
+
 To run the project, you need to execute the **main.py** script in the terminal, using the command **python main.py**. Another possible command is : python3 main.py.
 
-Constraints/Objectives : 
+### Constraints/Objectives : 
+
 I included the dr_internship.zip, a zip file containing : 
 - as many files as needed (scripts, programs, functions, etc...)
 - a README file describing the solution implemented, how to run it every day to compute the files.
 My solution uses **700 MiB max**, as we can see in the report_memory.txt
+
+*** 
 
 When you run main.py, it will create four directories and produce a report_memory.txt file. Here is the directory structure:
     * Main directory (root):
@@ -33,5 +37,6 @@ Similarly, the **top_7days.py** script generates two types of files each day:
 * country_top50_7days_YYYYMMDD.txt: Contains the top 50 songs listened to in a specific country in the last 7 days before YYYYMMDD.
 * user_top50_7days_YYYYMMDD.txt: Contains the top 50 songs most listened to by each user in the last 7 days before YYYYMMDD.
 
-Disclaimer : 
+### Disclaimer : 
+
 Due to being provided with only the sample_listen_2021-12-01.log file, it was not possible to determine the country's top 50 songs for the 7 days before the specified date. However, a file named country_top50_7days_20211201.txt is still created, even though it may not be representative. So the contents of this file country_top50_7days_20211201.txt represent the top 50 songs listened to in the country on December 1, 2021, due to the lack of data. 
