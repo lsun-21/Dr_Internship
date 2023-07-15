@@ -12,12 +12,13 @@ To run the project, you need to execute the **main.py** script in the terminal, 
 I included the dr_test.zip, a zip file containing : 
 - as many files as needed (scripts, programs, functions, etc...)
 - a README file describing the solution implemented, how to run it every day to compute the files.
+
 My solution uses **700 MiB max**, as we can see in the report_memory.txt
 The file **country_top50_YYYYMMDD.txt** is generated with the **top_1day.py** script.
 
 ### Disclaimer : 
 
-Due to being provided with only the sample_listen_2021-12-01.log file, it was not possible to determine the country's top 50 songs for the 7 days before the specified date. However, a file named country_top50_7days_20211201.txt is still created, even though it may not be representative. So the contents of this file country_top50_7days_20211201.txt represent the top 50 songs listened to in the country on December 1, 2021, due to the lack of data.
+Due to being provided with only the **sample_listen_2021-12-01.log** file, it was not possible to determine the country's top 50 songs for the 7 days before the specified date. However, a file named **country_top50_7days_20211201.txt** is still created, even though it may not be representative. So the contents of this file **country_top50_7days_20211201.txt** represent the top 50 songs listened to in the country on December 1, 2021, due to the lack of data.
 
 *** 
 ### Details on the structure of the project
