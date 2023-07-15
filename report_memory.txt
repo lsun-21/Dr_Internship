@@ -1,0 +1,269 @@
+Filename: /Users/lauriasun/Desktop/Dr_final/top_1day.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     7     43.8 MiB     43.8 MiB           1   @profile(stream=file_path)
+     8                                         def parse_log_file(log_file):
+     9     43.8 MiB      0.0 MiB           1       data = []
+    10    532.7 MiB      0.0 MiB           2       with open(log_file, 'r') as file:
+    11    532.7 MiB -38795719.1 MiB     1999999           for line in file:
+    12    532.7 MiB -38797034.5 MiB     1999998               try:
+    13    532.7 MiB -38796713.3 MiB     1999998                   sng_id, user_id, country = line.strip().split('|')
+    14    532.7 MiB -38795405.8 MiB     1999978                   data.append((sng_id, user_id, country))
+    15    186.6 MiB  -1269.7 MiB          20               except ValueError:
+    16    186.6 MiB      0.0 MiB          20                   continue  # Skip corrupted rows
+    17    532.7 MiB      0.0 MiB           1       return data
+
+
+Filename: /Users/lauriasun/Desktop/Dr_final/top_1day.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    20     43.8 MiB     43.8 MiB           1   @profile(stream=file_path)
+    21                                         def top50_1day(log_file):
+    22    532.8 MiB    489.0 MiB           1       daily_data = parse_log_file(log_file)
+    23                                         
+    24                                             # Data Processing
+    25    592.5 MiB      0.0 MiB          11       stream_counts_country = defaultdict(lambda: defaultdict(int))
+    26    648.7 MiB     10.2 MiB       84057       stream_counts_user = defaultdict(lambda: defaultdict(int))
+    27                                         
+    28    648.7 MiB      2.5 MiB     1999979       for sng_id, user_id, country in daily_data:
+    29    648.7 MiB     32.9 MiB     1999978           stream_counts_country[country][sng_id] += 1
+    30    648.7 MiB     64.8 MiB     1999978           stream_counts_user[user_id][sng_id] += 1
+    31                                         
+    32    633.5 MiB    -15.3 MiB           1       daily_data = None
+    33                                         
+    34                                             # Compute Top 50 Songs per Country
+    35    633.5 MiB      0.0 MiB           1       top_songs_country = {}
+    36    635.5 MiB    -10.4 MiB           6       for country, song_counts in stream_counts_country.items():
+    37    635.5 MiB -4140970.8 MiB     1131197           top_songs_country[country] = sorted(song_counts.items(), key=lambda x: x[1], reverse=True)[:50]
+    38                                         
+    39    635.5 MiB      0.0 MiB           1       stream_counts_country = None
+    40                                         
+    41                                             # Compute Top 50 Songs per User (Optional)
+    42    635.5 MiB      0.0 MiB           1       top_songs_user = {}
+    43    643.7 MiB      0.0 MiB       42029       for user_id, song_counts in stream_counts_user.items():
+    44    643.7 MiB      8.1 MiB     3005806           top_songs_user[user_id] = sorted(song_counts.items(), key=lambda x: x[1], reverse=True)[:50]
+    45                                         
+    46    640.8 MiB     -2.9 MiB           1       stream_counts_user = None 
+    47                                         
+    48    640.8 MiB      0.0 MiB           1       return top_songs_country, top_songs_user
+
+
+Filename: /Users/lauriasun/Desktop/Dr_final/top_1day.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    51     43.8 MiB     43.8 MiB           1   @profile(stream=file_path)
+    52                                         def write_1day_top50(log_file):
+    53     43.8 MiB      0.0 MiB           1       date_match = re.search(r'(\d{4})-(\d{2})-(\d{2})|(\d{4})(\d{2})(\d{2})', log_file)
+    54     43.8 MiB      0.0 MiB           1       if date_match:
+    55     43.8 MiB      0.0 MiB           1           groups = date_match.groups()
+    56     43.8 MiB      0.0 MiB           1           year = int(groups[0]) if groups[0] else int(groups[3])
+    57     43.8 MiB      0.0 MiB           1           month = int(groups[1]) if groups[1] else int(groups[4])
+    58     43.8 MiB      0.0 MiB           1           day = int(groups[2]) if groups[2] else int(groups[5])
+    59                                             else:
+    60                                                 raise ValueError('Date not found in log file name')
+    61                                         
+    62     43.8 MiB      0.0 MiB           1       date_match = None 
+    63    640.8 MiB    597.0 MiB           1       top_songs_country, top_songs_user = top50_1day(log_file)
+    64                                         
+    65                                             # Write Output to Files
+    66    640.8 MiB      0.0 MiB           1       countries_output_directory = 'Country_top50'
+    67    640.8 MiB      0.0 MiB           1       users_output_directory = 'User_top50'
+    68                                         
+    69    640.8 MiB      0.0 MiB           1       os.makedirs(countries_output_directory, exist_ok=True)
+    70    640.8 MiB      0.0 MiB           1       os.makedirs(users_output_directory, exist_ok=True)
+    71                                         
+    72                                             # Write top 50 songs per country to file
+    73    640.8 MiB      0.0 MiB           1       country_output_file = os.path.join(countries_output_directory, f'country_top50_{year}{month:02d}{day:02d}.txt')
+    74    640.8 MiB      0.0 MiB           2       with open(country_output_file, 'w') as file:
+    75    640.8 MiB      0.0 MiB           6           for country, songs in top_songs_country.items():
+    76    640.8 MiB      0.0 MiB         222               song_string = ','.join([f'{sng_id}:{count}' for sng_id, count in songs])
+    77    640.8 MiB      0.0 MiB           5               file.write(f'{country}|{song_string}\n')
+    78                                         
+    79    640.8 MiB      0.0 MiB           1       country_output_file = None 
+    80    640.8 MiB      0.0 MiB           1       top_songs_country = None
+    81                                         
+    82                                             # Write top 50 songs per user to one global file (optional)
+    83    640.8 MiB      0.0 MiB           1       users_output_file = os.path.join(users_output_directory, f'user_top50_{year}{month:02d}{day:02d}.txt')
+    84    640.8 MiB      0.0 MiB           2       with open(users_output_file, 'w') as file:
+    85    640.8 MiB      0.0 MiB       42029           for user_id, songs in top_songs_user.items():
+    86    640.8 MiB      0.0 MiB     1134304               song_string = ','.join([f'{sng_id}:{count}' for sng_id, count in songs])
+    87    640.8 MiB      0.0 MiB       42028               file.write(f'{user_id}|{song_string}\n')
+    88                                         
+    89    640.8 MiB      0.0 MiB           1       users_output_file = None 
+    90    157.8 MiB   -483.0 MiB           1       top_songs_user = None
+    91                                         
+    92    157.8 MiB      0.0 MiB           1       return None
+
+
+                           # Write Output to Files
+    96    156.9 MiB      0.0 MiB           1       if re.search(r'(country_top50_)', log_file) :
+    97    156.9 MiB      0.0 MiB           1           countries_output_directory = 'Country_top50_7days'
+    98    156.9 MiB      0.0 MiB           1           os.makedirs(countries_output_directory, exist_ok=True)
+    99                                         
+   100                                                 # Write top 50 songs per country to file
+   101    156.9 MiB      0.0 MiB           1           country_output_file = os.path.join(countries_output_directory, f'country_top50_7days_{year}{month:02d}{day:02d}.txt')
+   102    156.9 MiB      0.0 MiB           2           with open(country_output_file, 'w') as file:
+   103    156.9 MiB      0.0 MiB           6               for country, songs in top_songs.items():
+   104    156.9 MiB      0.0 MiB         222                   song_string = ','.join([f'{sng_id}:{count}' for sng_id, count in songs])
+   105    156.9 MiB      0.0 MiB           5                   file.write(f'{country}|{song_string}\n')
+   106                                         
+   107    156.9 MiB      0.0 MiB           1           country_output_file = None 
+   108    156.9 MiB      0.0 MiB           1           countries_output_directory = None
+   109                                             
+   110                                             elif re.search(r'(user_top50_)', log_file) :
+   111                                                 users_output_directory = 'User_top50_7days'
+   112                                                 os.makedirs(users_output_directory, exist_ok=True)
+   113                                         
+   114                                                 # Write top 50 songs per user to one global file (optional)
+   115                                                 users_output_file = os.path.join(users_output_directory, f'user_top50_7days_{year}{month:02d}{day:02d}.txt')
+   116                                                 with open(users_output_file, 'w') as file:
+   117                                                     for user_id, songs in top_songs.items():
+   118                                                         song_string = ','.join([f'{sng_id}:{count}' for sng_id, count in songs])
+   119                                                         file.write(f'{user_id}|{song_string}\n')
+   120                                         
+   121                                                 users_output_file = None 
+   122                                                 users_output_directory = None
+   123                                             
+   124    156.9 MiB      0.0 MiB           1       top_songs = None
+   125                                             
+   126    156.9 MiB      0.0 MiB           1       return None
+
+
+Filename: /Users/lauriasun/Desktop/Dr_final/top_7days.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     8    156.9 MiB    156.9 MiB           1   @profile(stream=file_path)
+     9                                         def parse_log_file(log_file):
+    10    156.9 MiB      0.0 MiB           1       data = []
+    11    281.2 MiB      0.0 MiB           2       with open(log_file, 'r') as file:
+    12    281.2 MiB      0.0 MiB       42029           for line in file:
+    13    281.2 MiB      0.0 MiB       42028               try:
+    14    281.2 MiB      2.7 MiB       42028                   id, song_counts = line.strip().split('|')
+    15    281.2 MiB     52.8 MiB       42028                   song_counts = song_counts.split(',')
+    16    281.2 MiB     61.0 MiB     1134304                   song_counts = [count.split(':') for count in song_counts]
+    17    281.2 MiB      7.7 MiB     1134304                   song_counts = [(sng_id, int(count)) for sng_id, count in song_counts]
+    18    281.2 MiB      0.0 MiB       42028                   data.append((id, song_counts))
+    19                                                     except ValueError:
+    20                                                         continue  # Skip corrupted rows
+    21    281.2 MiB      0.0 MiB           1       return data
+
+
+Filename: /Users/lauriasun/Desktop/Dr_final/top_7days.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    23    156.9 MiB    156.9 MiB           1   @profile(stream=file_path)
+    24                                         def top50_7days(current_day_file):
+    25    156.9 MiB      0.0 MiB           1       if re.search(r'(country_top50_)', current_day_file) :
+    26                                                 log_directory = 'Country_top50'
+    27    156.9 MiB      0.0 MiB           1       elif re.search(r'(user_top50_)', current_day_file) :
+    28    156.9 MiB      0.0 MiB           1           log_directory = 'User_top50'
+    29                                             else :
+    30                                                 raise ValueError('Log file name not found')
+    31    156.9 MiB      0.0 MiB           1       file_name = os.path.basename(current_day_file)
+    32                                         
+    33    156.9 MiB      0.0 MiB           1       date_match = re.search(r'(\d{4})(\d{2})(\d{2})', file_name)
+    34    156.9 MiB      0.0 MiB           1       if date_match:
+    35    156.9 MiB      0.0 MiB           1           year = int(date_match.group(1))
+    36    156.9 MiB      0.0 MiB           1           month = int(date_match.group(2))
+    37    156.9 MiB      0.0 MiB           1           day = int(date_match.group(3))
+    38                                             else:
+    39                                                 return None
+    40    156.9 MiB      0.0 MiB           1       date_match = None
+    41                                         
+    42                                             # Determine the date range for the last 7 days
+    43    156.9 MiB      0.0 MiB           1       current_date = datetime(year, month, day)
+    44    156.9 MiB      0.0 MiB           1       date_range_start = current_date - timedelta(days=7)
+    45                                         
+    46                                             # Collect and process log files for the last 7 days
+    47    156.9 MiB      0.0 MiB           1       relevant_log_files = []
+    48                                         
+    49    156.9 MiB      0.0 MiB           2       for file in os.listdir(log_directory):
+    50    156.9 MiB      0.0 MiB           1           if file.startswith('country_top50_') or file.startswith('user_top50_'):
+    51    156.9 MiB      0.0 MiB           1               try:
+    52    156.9 MiB      0.0 MiB           1                   log_date = datetime.strptime(file[-12:-4], "%Y%m%d")
+    53    156.9 MiB      0.0 MiB           1                   if date_range_start < log_date <= current_date:
+    54    156.9 MiB      0.0 MiB           1                       relevant_log_files.append(file)
+    55                                                     except ValueError:
+    56                                                         continue  # Skip log files with invalid date format
+    57                                             
+    58    156.9 MiB      0.0 MiB           1       current_date = None
+    59    156.9 MiB      0.0 MiB           1       date_range_start = None
+    60                                         
+    61                                             # Aggregate song stream counts for the last 7 days
+    62    300.6 MiB      0.0 MiB       84057       stream_counts = defaultdict(lambda: defaultdict(int))
+    63                                         
+    64    300.6 MiB      0.0 MiB           2       for log_file in relevant_log_files:
+    65    156.9 MiB      0.0 MiB           1           log_file_path = os.path.join(log_directory, log_file)
+    66    281.2 MiB    124.3 MiB           1           daily_data = parse_log_file(log_file_path)
+    67    300.6 MiB      0.0 MiB       42029           for id, song_counts in daily_data:
+    68    300.6 MiB      0.0 MiB     1050248               for sng_id, count in song_counts:
+    69    300.6 MiB     19.3 MiB     1008220                   stream_counts[id][sng_id] += count
+    70                                         
+    71    300.6 MiB      0.0 MiB           1       relevant_log_files = None
+    72                                         
+    73                                             # Compute Top 50 Songs per Id 
+    74    300.6 MiB      0.0 MiB           1       top_songs = {}
+    75    372.8 MiB      0.0 MiB       42029       for id, song_counts in stream_counts.items():
+    76    372.8 MiB     72.2 MiB     2058468           top_songs[id] = sorted(song_counts.items(), key=lambda x: x[1], reverse=True)[:50]
+    77                                         
+    78    352.5 MiB    -20.3 MiB           1       stream_counts = None 
+    79                                         
+    80    352.5 MiB      0.0 MiB           1       return top_songs
+
+
+Filename: /Users/lauriasun/Desktop/Dr_final/top_7days.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    82    156.9 MiB    156.9 MiB           1   @profile(stream=file_path)
+    83                                         def write_7days_top50(log_file):
+    84    156.9 MiB      0.0 MiB           1       date_match = re.search(r'(\d{4})(\d{2})(\d{2})', log_file)
+    85    156.9 MiB      0.0 MiB           1       if date_match:
+    86    156.9 MiB      0.0 MiB           1           year = int(date_match.group(1))
+    87    156.9 MiB      0.0 MiB           1           month = int(date_match.group(2))
+    88    156.9 MiB      0.0 MiB           1           day = int(date_match.group(3))
+    89                                             else : 
+    90                                                 return None
+    91                                         
+    92    156.9 MiB      0.0 MiB           1       date_match = None 
+    93    352.5 MiB    195.7 MiB           1       top_songs = top50_7days(log_file)
+    94                                         
+    95                                             # Write Output to Files
+    96    352.5 MiB      0.0 MiB           1       if re.search(r'(country_top50_)', log_file) :
+    97                                                 countries_output_directory = 'Country_top50_7days'
+    98                                                 os.makedirs(countries_output_directory, exist_ok=True)
+    99                                         
+   100                                                 # Write top 50 songs per country to file
+   101                                                 country_output_file = os.path.join(countries_output_directory, f'country_top50_7days_{year}{month:02d}{day:02d}.txt')
+   102                                                 with open(country_output_file, 'w') as file:
+   103                                                     for country, songs in top_songs.items():
+   104                                                         song_string = ','.join([f'{sng_id}:{count}' for sng_id, count in songs])
+   105                                                         file.write(f'{country}|{song_string}\n')
+   106                                         
+   107                                                 country_output_file = None 
+   108                                                 countries_output_directory = None
+   109                                             
+   110    352.5 MiB      0.0 MiB           1       elif re.search(r'(user_top50_)', log_file) :
+   111    352.5 MiB      0.0 MiB           1           users_output_directory = 'User_top50_7days'
+   112    352.5 MiB      0.0 MiB           1           os.makedirs(users_output_directory, exist_ok=True)
+   113                                         
+   114                                                 # Write top 50 songs per user to one global file (optional)
+   115    352.5 MiB      0.0 MiB           1           users_output_file = os.path.join(users_output_directory, f'user_top50_7days_{year}{month:02d}{day:02d}.txt')
+   116    352.5 MiB      0.0 MiB           2           with open(users_output_file, 'w') as file:
+   117    352.5 MiB      0.0 MiB       42029               for user_id, songs in top_songs.items():
+   118    352.5 MiB      0.0 MiB     1134304                   song_string = ','.join([f'{sng_id}:{count}' for sng_id, count in songs])
+   119    352.5 MiB      0.0 MiB       42028                   file.write(f'{user_id}|{song_string}\n')
+   120                                         
+   121    352.5 MiB      0.0 MiB           1           users_output_file = None 
+   122    352.5 MiB      0.0 MiB           1           users_output_directory = None
+   123                                             
+   124    154.5 MiB   -198.0 MiB           1       top_songs = None
+   125                                             
+   126    154.5 MiB      0.0 MiB           1       return None
+
+
