@@ -19,6 +19,7 @@ My solution uses **700 MiB max**, as we can see in the report_memory.txt
 When you run main.py, it will create four directories and produce a report_memory.txt file. Here is the directory structure:
 
     - Main directory (root):
+    
         - **top_1day.py**
         - **top_7days.py**
         - **main.py**
