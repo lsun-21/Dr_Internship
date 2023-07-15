@@ -18,16 +18,16 @@ My solution uses **700 MiB max**, as we can see in the report_memory.txt
 
 When you run main.py, it will create four directories and produce a report_memory.txt file. Here is the directory structure:
 
-    - Main directory (root):
-    
-        - **top_1day.py**
-        - **top_7days.py**
-        - **main.py**
-        - **report_memory.txt**
-        - *Country_top50* (directory): Contains files named **country_top50_YYYYMMDD.txt** with the top 50 songs listened in a specific country each day.
-        - *Users_top50* (directory): Contains files named **user_top50_YYYYMMDD.txt** with the top 50 songs most listened to by each user each day.
-        - *Country_top50_7days* (directory): Contains files named **country_top50_7days_YYYYMMDD.txt** with the top 50 songs listened in a specific country in the last 7 days before YYYYMMDD.
-        - *Users_top50_7days* (directory): Contains files named **user_top50_7days_YYYYMMDD.txt** with the top 50 songs most listened to by each user in the last 7 days before YYYYMMDD.
+- Main directory (root):
+
+    - **top_1day.py**
+    - **top_7days.py**
+    - **main.py**
+    - **report_memory.txt**
+    - *Country_top50* (directory): Contains files named **country_top50_YYYYMMDD.txt** with the top 50 songs listened in a specific country each day.
+    - *Users_top50* (directory): Contains files named **user_top50_YYYYMMDD.txt** with the top 50 songs most listened to by each user each day.
+    - *Country_top50_7days* (directory): Contains files named **country_top50_7days_YYYYMMDD.txt** with the top 50 songs listened in a specific country in the last 7 days before YYYYMMDD.
+    - *Users_top50_7days* (directory): Contains files named **user_top50_7days_YYYYMMDD.txt** with the top 50 songs most listened to by each user in the last 7 days before YYYYMMDD.
 
 The **report_memory.txt** file is a text file that represents the report memory of the most recent execution of the main.py script. It contains information about the memory usage during the execution of the script.
 
