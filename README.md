@@ -7,6 +7,8 @@ This project consists of three Python scripts: **top_1day.py**, **top_7days.py**
 
 To run the project, you need to execute the **main.py** script in the terminal, using the command **python main.py**. Another possible command is : python3 main.py.
 
+The project can take a few minutes to run. It is possible to uncomment the last two lines of the **main.py** script, in order to have the top 50 on the last 7 days. However, the execution is longer, so I uncommented them for faster execution. 
+
 ### Constraints/Objectives : 
 
 I included the dr_test.zip, a zip file containing : 
